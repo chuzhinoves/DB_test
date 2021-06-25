@@ -60,6 +60,7 @@ class SignalsTest(TestCase):
         self.assertEqual(len(type_signal), 4)
         
     def test_craete_obj(self):
+        print ('pipelineobject test create_objects\n')
         new_obj = PipelineObject.objects.create(name="12", object_type=self.pump_type)
         for type_signal in self.pump_type.type_signal.all():
             SignalInfo.objects.create(pipeline_object=new_obj,
@@ -84,16 +85,16 @@ class TopologyTest (TestCase):
         self.tube_type = TypeObject.objects.create(name="tube")
         self.tee_type = TypeObject.objects.create(name="tee")
         self.tank_type = TypeObject.objects.create(name='tank')
+        self.tank1 = PipelineObject.objects.create(name='1', object_type=self.tank_type)
+        self.tube1 = PipelineObject.objects.create(name='1', object_type=self.tube_type)
+        self.pump1 = PipelineObject.objects.create(name='1', object_type=self.pump_type)
+        self.tube2 = PipelineObject.objects.create(name='2', object_type=self.tube_type)
+        self.tank2 = PipelineObject.objects.create(name='2', object_type=self.tank_type)
+        Topology.objects.create(source=self.tank1, target=self.tube1)
+        Topology.objects.create(source=self.tube1, target=self.pump1)
+        Topology.objects.create(source=self.pump1, target=self.tube2)
+        Topology.objects.create(source=self.tube2, target=self.tank2)
 
     def test_create_objects(self):
-        tank1 = PipelineObject.objects.create(name='1', object_type=self.tank_type)
-        tube1 = PipelineObject.objects.create(name='1', object_type=self.tube_type)
-        pump1 = PipelineObject.objects.create(name='1', object_type=self.pump_type)
-        tube2 = PipelineObject.objects.create(name='2', object_type=self.tube_type)
-        tank2 = PipelineObject.objects.create(name='2', object_type=self.tank_type)
-        Topology.objects.create(source=tank1, target=tube1)
-        Topology.objects.create(source=tube1, target=pump1)
-        Topology.objects.create(source=pump1, target=tube2)
-        Topology.objects.create(source=tube2, target=tank2)
-        self.assertSetEqual(tank1.sources.all(), tube1.targets.all())
-    
+        print ('topology test create_objects\n')
+        self.assertSetEqual(self.tank1.sources.all(), self.tube1.targets.all())
