@@ -61,10 +61,18 @@ class SignalsTest(TestCase):
         
     def test_craete_obj(self):
         new_obj = PipelineObject.objects.create(name="12", object_type=self.pump_type)
+        for type_signal in self.pump_type.type_signal.all():
+            SignalInfo.objects.create(pipeline_object=new_obj,
+                                      signal=type_signal.signal)
+        
+        signals_info = new_obj.signal_values.all()
+        self.assertEqual(len(signals_info), 4)
+        self.assertSetEqual(set(signals_info), set(SignalInfo.objects.all()))
+        signal_obj = Signals.objects.filter(pipeline__pk=new_obj.pk)
         self.assertEqual(len(signal_obj), 4)
         self.assertSetEqual(set(signal_obj), set(self.pump_type.signals.all()))
         new_signal = Signals.objects.create(name = "new_signal")
-        SignalInfo.objects.create(object_signal=new_obj, signal=new_signal)
+        SignalInfo.objects.create(pipeline_object=new_obj, signal=new_signal)
         signal_obj = Signals.objects.filter(pipeline__pk=new_obj.pk)
         self.assertEqual(len(signal_obj), 5)
         self.assertIn(new_signal, signal_obj)
