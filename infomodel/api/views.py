@@ -15,11 +15,16 @@ class PipelineObjectViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'])
     def insert_in_objects(self, request, pk):
-        pass
+        data = request.data
+        
+
     
 
 class TypeObjectViewSet(viewsets.ModelViewSet):
     serializer_class = TypeObjectSerializer
     queryset = TypeObject.objects.all()
-    
-    
+
+
+class SignalsViewSet(viewsets.ModelViewSet):
+    serializer_class = SignalsSerializer
+    queryset = Signals.objects.all()

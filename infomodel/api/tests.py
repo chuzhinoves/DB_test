@@ -30,5 +30,12 @@ class ApiTest (APITestCase):
             serializer.save()
         self.assertEqual(PipelineObject.objects.count(), 1)
         self.assertEqual(PipelineObject.objects.get().name, '123')
-
+    
+    def test_create_related(self):
+        signal_names = ['p_in', 'p_out', 'close', 'open', 'start', 'stop']
+        for signal_name in signal_names:
+            serializer = SignalsSerializer(data={'name' : signal_name})
+            if serializer.is_valid():
+                serializer.save()
+        self.assertEqual(Signals.objects.count(), 6)
         
